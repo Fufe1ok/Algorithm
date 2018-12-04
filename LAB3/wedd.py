@@ -1,77 +1,24 @@
-vertexes = set()
+public class Beer {
+    private static int choose(String[] beers) {
+        int n = beers.length, m = beers[0].length();
+        int[] beer = new int[n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++) {
+                beer[i] = beer[i] << 1;
+                beer[i] += (beers[i].charAt(j) == 'Y') ? 1 : 0;
+            }
+        int min = Integer.MAX_VALUE;
+        loop: for (int i = 1; i < (1 << m); i++) {
+            for (int j = 0; j < n; j++)
+                if ((i & beer[j]) == 0)
+                    continue loop;
+            min = Math.min(Integer.bitCount(i), min);
+        }
+        return min;
+    }
 
-def read_from_file():
-    with open('wedd.txt') as f:
-        data = f.readlines()
-    graph = {}
-
-    n = data.__len__()
-    for i in range(1, n):
-        nums = [int(n) for n in data[i].split()]
-        graph = add_value(graph, nums[0], nums[1])
-        graph = add_value(graph, nums[1], nums[0])
-        vertexes.add(nums[0])
-        vertexes.add(nums[1])
-
-    return graph, n
-
-
-def add_value(graph, x, y):
-    try:
-        z = graph[x]
-    except KeyError:
-        graph[x] = set()
-
-    graph[x].add(y)
-    return graph
-
-
-def odd(vertex, parity):
-    if vertex % 2 == 1:
-        parity[0] += 1
-    else:
-        parity[1] += 1
-    return parity
-
-
-def dfs(graph, start_vertex, parity):
-    print(start_vertex, end=" ")
-    parity = odd(start_vertex, parity)
-
-    try:
-        vertexes.remove(start_vertex)
-    except:
-        pass
-
-    for vertex in graph[start_vertex]:
-        if vertex in vertexes:
-            dfs(graph, vertex, parity)
-
-
-def dfs_main(graph, n):
-    tribes = []
-    while vertexes:
-        parity = [0, 0]
-        dfs(graph, int(vertexes.pop()), parity)
-        tribes.append(parity)
-        print()
-    print(tribes)
-    return tribes
-
-
-def count_pairs(tribes):
-    count = 0
-    n = tribes.__len__()
-    for i in range(0, n):
-        for j in range(i, n):
-            if i != j:
-                x = tribes[i][0] * tribes[j][1] + tribes[i][1] * tribes[j][0]
-                count += x
-    return count
-
-
-if __name__ == '__main__':
-    graph, n = read_from_file()
-    tribes = dfs_main(graph, n)
-    count = count_pairs(tribes)
-    print(count)
+    public static void main(String[] args) {
+        String[] beers = new String[]{"YNY", "NYY", "NYY", "YNY", "YNY"};
+        System.out.println(choose(beers));
+    }
+}
